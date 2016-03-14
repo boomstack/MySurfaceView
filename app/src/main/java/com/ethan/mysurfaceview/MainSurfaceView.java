@@ -96,7 +96,6 @@ public class MainSurfaceView extends SurfaceView implements SurfaceHolder.Callba
         switch (action) {
             case MotionEvent.ACTION_DOWN:
                 setCurTouch(mX, mY);
-                redoList = new ArrayList<>();
                 break;
             case MotionEvent.ACTION_MOVE:
                 if (curTouch != null) {
