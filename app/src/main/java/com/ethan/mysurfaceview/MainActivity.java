@@ -2,7 +2,6 @@ package com.ethan.mysurfaceview;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -12,7 +11,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ColorPickerDialogFragment.OnColorChosenListener {
     private MainSurfaceView sv;
     private SeekBar seekBar;
     private TextView widthTv;
@@ -22,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     public static int width;
     public static int height;
 
+    ColorPickerDialogFragment colorPickerDialogFragment;
+    int pickedColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +42,6 @@ public class MainActivity extends AppCompatActivity {
                 sv.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 width = sv.getWidth();
                 height = sv.getHeight();
-                System.out.println("hola: width: " + width + " height: " + height);
-
             }
         });
 
@@ -79,22 +78,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setModeDraw(View view) {
-        Toast.makeText(this,"当前可以绘图",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "当前可以绘图", Toast.LENGTH_SHORT).show();
         sv.setDraw();
     }
 
     public void setModeEraser(View view) {
-        Toast.makeText(this,"当前可以擦除",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "当前可以擦除", Toast.LENGTH_SHORT).show();
         sv.setEraser();
     }
 
-    public void changeColor(View view) {
-        new ColorPickerDialog(MainActivity.this, new ColorPickerDialog.OnColorChangedListener() {
-            @Override
-            public void colorChanged(int color) {
-                sv.setPaintColor(color);
-            }
-        }, Color.RED).show();
+    public void showColorPicker(View view) {
+        colorPickerDialogFragment = new ColorPickerDialogFragment();
+        colorPickerDialogFragment.show(getFragmentManager(), "Color picker");
     }
 
     @Override
@@ -105,5 +100,15 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void onColorChosen(int pickedColor) {
+        this.pickedColor = pickedColor;
+        updateColor();
+    }
+
+    public void updateColor() {
+        sv.setPaintColor(pickedColor);
     }
 }
